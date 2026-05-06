@@ -111,7 +111,7 @@ public:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 public:
 	void AddMovementInfo(FMovementDebuggerItem *MovementInfo);
-	void PopLastMovementInfo();
+	void PopLastMovementInfo(FMovementDebuggerItem *MovementInfo);
 	
 	void UpdateAndCheckParentInfo(FMovementDebuggerItem *MovementInfo);
 	

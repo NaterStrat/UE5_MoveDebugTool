@@ -21,14 +21,11 @@ FMovementDebuggerItem::FMovementDebuggerItem(ACharacter* Target, const FString& 
 
 FMovementDebuggerItem::~FMovementDebuggerItem()
 {
-	if (TargetActor.IsValid())
+	UMovementInfoSubsystem *MovementInfoSubsystem = UMovementInfoSubsystem::Get(TargetActor->GetWorld());
+	if (MovementInfoSubsystem)
 	{
-		UMovementInfoSubsystem *MovementInfoSubsystem = UMovementInfoSubsystem::Get(TargetActor->GetWorld());
-        if (MovementInfoSubsystem)
-        {
-	        	UpdateInfo(AfterInfo);
-	        	MovementInfoSubsystem->PopLastMovementInfo();
-        }
+		UpdateInfo(AfterInfo);
+		MovementInfoSubsystem->PopLastMovementInfo(this);
 	}
 }
 
@@ -76,13 +73,17 @@ void UMovementInfoSubsystem::AddMovementInfo(FMovementDebuggerItem* MovementInfo
 	MovementDebuggerItems.Add(MovementInfo);
 }
 
-void UMovementInfoSubsystem::PopLastMovementInfo()
+void UMovementInfoSubsystem::PopLastMovementInfo(FMovementDebuggerItem *MovementInfo)
 {
-	if (MovementDebuggerItems.Num())
+	if (MovementDebuggerItems.Num() && (MovementInfo == MovementDebuggerItems.Last()))
 	{
 		FMovementDebuggerItem* LastItem = MovementDebuggerItems.Last();
 		PrintMovementDifInfo(LastItem);
 		MovementDebuggerItems.Pop();
+	}
+	else
+	{
+		// 这里加个警示:堆栈污染了
 	}
 }
 
